@@ -13,6 +13,27 @@ datagroup: salesforce_demo_bfw_default_datagroup {
 
 persist_with: salesforce_demo_bfw_default_datagroup
 
+
+explore: dynamic_calendar {
+  from: dynamic_calendar
+  always_filter: {
+    filters: { field: dynamic_calendar.date_granularity value: "Second" }
+#     filters: { field: dynamic_calendar.date_filter value: "14 days" }
+  }
+  join: dynamic_history {
+    type: inner
+    relationship: one_to_many
+    sql_on: ${dynamic_calendar.calendar_string} BETWEEN ${dynamic_history.window_start} AND ${dynamic_history.window_end} ;;
+  }
+  join: opportunity {
+    fields: [id, closed_date, owner_id, type, opportunity.stage_name]
+    type: inner
+    relationship: one_to_many
+    sql_on: ${dynamic_history.opportunity_id}  = ${opportunity.id};;
+  }
+}
+
+
 explore: account {}
 
 explore: account_contact_role {

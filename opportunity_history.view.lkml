@@ -4,7 +4,7 @@ view: opportunity_history {
   dimension: id {
     primary_key: yes
     type: string
-    sql: ${TABLE}.id ;;
+    sql: SPLIT_PART(${TABLE}.id,'-',1) ;;
   }
 
   dimension: amount {
@@ -49,7 +49,7 @@ view: opportunity_history {
   dimension: opportunity_id {
     type: string
     # hidden: yes
-    sql: ${TABLE}.opportunity_id ;;
+    sql: SPLIT_PART(${TABLE}.opportunity_id,'-',1) ;;
   }
 
   dimension: probability {
@@ -62,8 +62,18 @@ view: opportunity_history {
     sql: ${TABLE}.stage_name ;;
   }
 
+  dimension: is_negotiate {
+    type: yesno
+    sql: ${stage_name} IN ('Negotiate', 'I' ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [id, stage_name, opportunity.stage_name, opportunity.renewal_opportunity_id]
   }
+
+  ## hidden measures
+  measure: max_negotiate {}
+
+
 }
