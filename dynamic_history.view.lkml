@@ -15,8 +15,9 @@ view: dynamic_history {
        FROM history_opportunity_stage
       )
       SELECT DISTINCT opportunity_id, selected_field
-        , DATE_TRUNC('{% parameter dynamic_calendar.date_granularity %}',created_at) as window_start
-        , COALESCE(DATE_TRUNC('{% parameter dynamic_calendar.date_granularity %}',lead(created_at) OVER (PARTITION BY opportunity_id ORDER BY created_at)), {% date_end dynamic_calendar.date_filter %}) as window_end
+        , created_at as window_start
+        , lead(created_at) OVER (PARTITION BY opportunity_id ORDER BY created_at) as window_end
+        , lead(selected_field) OVER (PARTITION BY opportunity_id ORDER BY created_at) as next_selected_field
         FROM history_opportunity_next_value
         WHERE selected_field != last_selected_field
        ;;
@@ -40,24 +41,61 @@ view: dynamic_history {
     sql: ${TABLE}.selected_field ;;
   }
 
+  dimension: stage {
+    type: string
+    sql: CASE
+        WHEN ${selected_field} ~ 'Active Lead|Validate'         THEN '1 Validate'
+        WHEN ${selected_field} ~ 'Qualif'                       THEN '2 Qualify'
+        WHEN ${selected_field} ~ 'Develop Positive|positive'    THEN '4 Develop Positive'
+        WHEN ${selected_field} ~ 'Negotiat|Proposal'            THEN '5 Negotiate'
+        WHEN ${selected_field} ~ 'Trial|Develop'                THEN '3 Develop'
+        WHEN ${selected_field} ~ 'Sales Submitted|Commit'       THEN '6 Sales Submitted'
+        WHEN ${selected_field} ~ 'Closed Lost'                  THEN 'Closed Lost'
+        WHEN ${selected_field} ~ 'Closed Won'                   THEN 'Closed Won'
+        ELSE 'Unknown' END  ;;
+  }
+
+  dimension: stage_orderby {
+    type: string
+    hidden: yes
+    sql: LEFT(${stage},1) ;;
+  }
+
   dimension: last_selected_field {
     type: string
     sql: ${TABLE}.last_selected_field ;;
   }
 
+  dimension: next_selected_field {
+    type: string
+    sql: ${TABLE}.next_selected_field ;;
+  }
+
+  dimension: is_last_value {
+    type: yesno
+    sql: ${TABLE}.window_end IS NULL ;;
+  }
   dimension: window_start {
     type: date
     sql: ${TABLE}.window_start ;;
+    convert_tz: no
   }
 
   dimension: window_end {
     type: date
-    sql: ${TABLE}.window_end ;;
+    sql: COALESCE(${TABLE}.window_end, {% date_end dynamic_calendar.date_filter %}) ;;
+    convert_tz: no
   }
 
-  measure: days_in_stage {
-    type: max
+  dimension: days_in_stage {
+    type: number
     sql: DATEDIFF(day, ${window_start}, ${window_end}) ;;
+  }
+
+  measure: average_days_in_stage {
+    type: average
+    sql: ${days_in_stage} ;;
+    value_format_name: decimal_1
   }
 
   measure: count {

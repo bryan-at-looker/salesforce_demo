@@ -10,7 +10,7 @@ view: dynamic_calendar {
         DATE_TRUNC('{% parameter dynamic_calendar.date_granularity %}', dateadd({% parameter dynamic_calendar.date_granularity %}, numbers.number -1 , {% date_start dynamic_calendar.date_filter %}))
         as series_date
       FROM numbers
-        WHERE numbers.number <= DATEDIFF(day, COALESCE( {% date_start dynamic_calendar.date_filter %},CAST('2000-01-01' as TIMESTAMP )), COALESCE({% date_end dynamic_calendar.date_filter %},current_date))
+        WHERE numbers.number <= DATEDIFF({% parameter dynamic_calendar.date_granularity %}, COALESCE( {% date_start dynamic_calendar.date_filter %},CAST('2000-01-01' as TIMESTAMP )), COALESCE({% date_end dynamic_calendar.date_filter %},current_date))
        ;;
   }
 

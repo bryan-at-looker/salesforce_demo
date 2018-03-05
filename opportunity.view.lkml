@@ -2,7 +2,6 @@ view: opportunity {
   sql_table_name: public.opportunity ;;
 
   dimension: renewal_opportunity_id {
-    primary_key: yes
     type: string
     sql: ${TABLE}.renewal_opportunity_id ;;
   }
@@ -21,6 +20,13 @@ view: opportunity {
   dimension: amount {
     type: number
     sql: ${TABLE}.amount ;;
+  }
+
+  measure: total_acv {
+    type: sum
+    label: "Total ACV"
+    sql: ${amount} ;;
+    value_format: "$0.00,,\"M\""
   }
 
   dimension: campaign_id {
@@ -69,6 +75,7 @@ view: opportunity {
   }
 
   dimension: id {
+    primary_key: yes
     type: string
     sql: ${TABLE}.id ;;
   }
