@@ -17,8 +17,9 @@ persist_with: salesforce_demo_bfw_default_datagroup
 explore: dynamic_calendar {
   from: dynamic_calendar
   always_filter: {
-    filters: { field: dynamic_calendar.date_granularity value: "Second" }
-#     filters: { field: dynamic_calendar.date_filter value: "14 days" }
+    filters: { field: dynamic_calendar.date_granularity value: "Day" }
+    filters: { field: dynamic_calendar.date_filter value: "14 days" }
+    filters: { field: dynamic_calendar.changing_value value: "Stage" }
   }
   join: dynamic_history {
     type: inner
