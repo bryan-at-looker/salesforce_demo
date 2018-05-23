@@ -34,6 +34,37 @@ explore: dynamic_calendar {
   }
 }
 
+explore: campaign_member {
+  join: campaign {
+    type: left_outer
+    sql_on: ${campaign_member.campaign_id} = ${campaign.id} ;;
+    relationship: many_to_one
+  }
+  join: contact {
+    view_label: "Contacts (Marketing Touched)"
+    type: left_outer
+    sql_on: ${campaign_member.lead_or_contact_id} = ${contact.id} ;;
+    relationship: many_to_one
+  }
+  join: lead {
+    view_label: "Leads (Marketing Touched)"
+    type: left_outer
+    sql_on: ${campaign_member.lead_or_contact_id} = ${lead.id} ;;
+    relationship: many_to_one
+  }
+  join: opportunity {
+    view_label: "Marketing Touched Opportunities"
+    type: left_outer
+    sql_on:  ${campaign.id} = ${opportunity.campaign_id} AND ${opportunity.created_raw} < ${campaign.created_raw} ;;
+    relationship: one_to_one
+  }
+  join: account {
+    view_label: "Account with Opportunities"
+    type: left_outer
+    sql_on: ${opportunity.account_id} = ${account.id} ;;
+    relationship: many_to_one
+  }
+}
 
 # explore: account {}
 #

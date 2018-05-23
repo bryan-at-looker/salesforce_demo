@@ -86,13 +86,21 @@ view: opportunity {
   }
 
   dimension: is_closed {
+    group_label: "Opportunity Flags"
     type: yesno
     sql: ${TABLE}.is_closed ;;
   }
 
   dimension: is_won {
+    group_label: "Opportunity Flags"
     type: yesno
     sql: ${TABLE}.is_won ;;
+  }
+
+  dimension: is_closed_won  {
+    group_label: "Opportunity Flags"
+    type: yesno
+    sql: ${is_closed} AND ${is_won} ;;
   }
 
   dimension: lead_source {
@@ -100,9 +108,16 @@ view: opportunity {
     sql: ${TABLE}.lead_source ;;
   }
 
-  dimension: mrr {
+  dimension: mrr_raw {
+    hidden: yes
     type: number
     sql: ${TABLE}.mrr ;;
+  }
+
+  measure: mrr {
+    label: "MRR"
+    type: sum
+    sql: ${mrr_raw}  ;;
   }
 
   dimension: nrr {
@@ -143,6 +158,17 @@ view: opportunity {
   measure: count {
     type: count
     drill_fields: [detail*]
+  }
+
+  measure: won_opportunities {
+    type: count
+    filters: { field: is_closed_won value: "Yes" }
+  }
+
+  measure: lost_opportunities {
+    type: count
+    filters: { field: is_won value: "No" }
+    filters: { field: is_closed value: "Yes" }
   }
 
   # ----- Sets of fields for drilling ------

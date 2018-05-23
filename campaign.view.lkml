@@ -7,17 +7,17 @@ view: campaign {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: ad_type_c {
+  dimension: ad_type {
     type: string
     sql: ${TABLE}.ad_type_c ;;
   }
 
-  dimension: allocation_c {
+  dimension: allocation {
     type: string
     sql: ${TABLE}.allocation_c ;;
   }
 
-  dimension: conversion_point_c {
+  dimension: conversion_point {
     type: string
     sql: ${TABLE}.conversion_point_c ;;
   }
@@ -51,12 +51,12 @@ view: campaign {
     sql: ${TABLE}.end_date ;;
   }
 
-  dimension: grouping_c {
+  dimension: grouping {
     type: string
     sql: ${TABLE}.grouping_c ;;
   }
 
-  dimension: initiative_type_c {
+  dimension: initiative_type {
     type: string
     sql: ${TABLE}.initiative_type_c ;;
   }
@@ -91,7 +91,7 @@ view: campaign {
     sql: ${TABLE}.number_of_won_opportunities ;;
   }
 
-  dimension: origin_c {
+  dimension: origin {
     type: string
     sql: ${TABLE}.origin_c ;;
   }

@@ -13,7 +13,7 @@ view: contact {
     sql: ${TABLE}.account_id ;;
   }
 
-  dimension: contact_type_c {
+  dimension: contact_type {
     type: string
     sql: ${TABLE}.contact_type_c ;;
   }
@@ -32,7 +32,7 @@ view: contact {
     sql: ${TABLE}.created_at ;;
   }
 
-  dimension: current_customer_c {
+  dimension: current_customer {
     type: yesno
     sql: ${TABLE}.current_customer_c ;;
   }
@@ -42,7 +42,7 @@ view: contact {
     sql: ${TABLE}.department ;;
   }
 
-  dimension: department_picklist_c {
+  dimension: department_picklist {
     type: string
     sql: ${TABLE}.department_picklist_c ;;
   }
@@ -52,22 +52,22 @@ view: contact {
     sql: ${TABLE}.email ;;
   }
 
-  dimension: grouping_c {
+  dimension: grouping {
     type: string
     sql: ${TABLE}.grouping_c ;;
   }
 
-  dimension: inbound_form_fillout_c {
+  dimension: inbound_form_fillout {
     type: string
     sql: ${TABLE}.inbound_form_fillout_c ;;
   }
 
-  dimension: intro_meeting_c {
+  dimension: intro_meeting {
     type: yesno
     sql: ${TABLE}.intro_meeting_c ;;
   }
 
-  dimension: job_function_c {
+  dimension: job_function {
     type: string
     sql: ${TABLE}.job_function_c ;;
   }
@@ -82,17 +82,17 @@ view: contact {
     sql: ${TABLE}.name ;;
   }
 
-  dimension: primary_contact_c {
+  dimension: primary_contact {
     type: yesno
     sql: ${TABLE}.primary_contact_c ;;
   }
 
-  dimension: qual_form_fillout_c {
+  dimension: qual_form_fillout {
     type: yesno
     sql: ${TABLE}.qual_form_fillout_c ;;
   }
 
-  dimension: territory_c {
+  dimension: territory {
     type: string
     sql: ${TABLE}.territory_c ;;
   }
@@ -111,6 +111,14 @@ view: contact {
     type: count
     drill_fields: [detail*]
   }
+
+  measure: intro_meeting_count {
+    type: count
+    drill_fields: [detail*]
+    filters: { field: intro_meeting value: "Yes" }
+  }
+
+  measure: lead_conversion {}
 
   # ----- Sets of fields for drilling ------
   set: detail {
